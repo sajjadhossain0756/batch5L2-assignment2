@@ -32,29 +32,35 @@ INSERT INTO sightings (species_id, ranger_id, location, sighting_time, notes) VA
 (7, 5, 'Coastal Nesting Site', '2024-05-24 06:30:00', 'New hatchlings observed'),
 (2, 1, 'Forest Canopy Trail', '2024-05-25 08:00:00', 'Mother with infant'),
 (9, 2, 'Rocky Mountain Slope', '2024-05-26 09:30:00', 'Eating berries');
-SELECT * FROM sightings;
+
+
 -- Problem One;
 INSERT INTO rangers (name,region) VALUES ('Derek Fox','Coastal Plains');
-SELECT * FROM species;
+
 -- Problem Two;
 SELECT COUNT(DISTINCT species_id) as unique_species_cout FROM sightings; 
+
 -- Problem Three;
 SELECT * FROM sightings WHERE location ILIKE '%pass%';
+
 -- Problems Four;
 SELECT name,COUNT(sightings.ranger_id) as total_sightings FROM rangers
   JOIN sightings ON rangers.ranger_id = sightings.ranger_id GROUP BY name;
+
 -- Problems Five;
 SELECT common_name FROM species WHERE NOT EXISTS(SELECT species_id FROM sightings 
 WHERE species_id = species.species_id);
+
 -- Problems Six;
 SELECT common_name, sighting_time,name FROM sightings s
 JOIN species sp ON sp.species_id = s.species_id 
 JOIN rangers r ON r.ranger_id = s.ranger_id ORDER BY sighting_time DESC LIMIT 2;  
+
 -- Problems Seven;
 UPDATE species
   SET conservation_status = 'Historic'
   WHERE EXTRACT(year FROM discovery_date) > 1800;
-SELECT EXTRACT(HOUR FROM sighting_time) FROM sightings;
+
 -- Problems Eight;
 CREATE or REPLACE FUNCTION time_of_day(hour NUMERIC)
 RETURNS VARCHAR(255)
@@ -73,6 +79,9 @@ $$
       END IF;    
   END;
 $$;
-SELECT time_of_day(0);
 SELECT sighting_id,time_of_day(EXTRACT(HOUR FROM sighting_time)) 
 FROM sightings;
+
+-- Problems Nine;
+DELETE FROM rangers 
+WHERE ranger_id NOT IN(SELECT ranger_id FROM sightings);
