@@ -44,4 +44,35 @@ SELECT * FROM sightings WHERE location ILIKE '%pass%';
 SELECT name,COUNT(sightings.ranger_id) as total_sightings FROM rangers
   JOIN sightings ON rangers.ranger_id = sightings.ranger_id GROUP BY name;
 -- Problems Five;
-SELECT common_name FROM species WHERE NOT EXISTS(SELECT species_id FROM sightings WHERE species_id = species.species_id);  
+SELECT common_name FROM species WHERE NOT EXISTS(SELECT species_id FROM sightings 
+WHERE species_id = species.species_id);
+-- Problems Six;
+SELECT common_name, sighting_time,name FROM sightings s
+JOIN species sp ON sp.species_id = s.species_id 
+JOIN rangers r ON r.ranger_id = s.ranger_id ORDER BY sighting_time DESC LIMIT 2;  
+-- Problems Seven;
+UPDATE species
+  SET conservation_status = 'Historic'
+  WHERE EXTRACT(year FROM discovery_date) > 1800;
+SELECT EXTRACT(HOUR FROM sighting_time) FROM sightings;
+-- Problems Eight;
+CREATE or REPLACE FUNCTION time_of_day(hour NUMERIC)
+RETURNS VARCHAR(255)
+LANGUAGE plpgsql
+AS
+$$
+  BEGIN
+      IF hour >= 0 AND hour < 12 THEN
+        RETURN 'Morning';
+      ELSIF hour >= 12 AND hour < 17 THEN
+        RETURN 'Afternoon';
+      ELSIF hour >= 17 AND hour <= 23 THEN  
+        RETURN 'Evening'; 
+      ELSE 
+        RETURN 'Not a valid Hour';
+      END IF;    
+  END;
+$$;
+SELECT time_of_day(0);
+SELECT sighting_id,time_of_day(EXTRACT(HOUR FROM sighting_time)) 
+FROM sightings;
