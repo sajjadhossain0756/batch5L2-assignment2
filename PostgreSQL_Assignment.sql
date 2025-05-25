@@ -33,3 +33,15 @@ INSERT INTO sightings (species_id, ranger_id, location, sighting_time, notes) VA
 (2, 1, 'Forest Canopy Trail', '2024-05-25 08:00:00', 'Mother with infant'),
 (9, 2, 'Rocky Mountain Slope', '2024-05-26 09:30:00', 'Eating berries');
 SELECT * FROM sightings;
+-- Problem One;
+INSERT INTO rangers (name,region) VALUES ('Derek Fox','Coastal Plains');
+SELECT * FROM species;
+-- Problem Two;
+SELECT COUNT(DISTINCT species_id) as unique_species_cout FROM sightings; 
+-- Problem Three;
+SELECT * FROM sightings WHERE location ILIKE '%pass%';
+-- Problems Four;
+SELECT name,COUNT(sightings.ranger_id) as total_sightings FROM rangers
+  JOIN sightings ON rangers.ranger_id = sightings.ranger_id GROUP BY name;
+-- Problems Five;
+SELECT common_name FROM species WHERE NOT EXISTS(SELECT species_id FROM sightings WHERE species_id = species.species_id);  
